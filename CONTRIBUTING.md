@@ -31,9 +31,3 @@ Before you request to submit a change, be sure an issue is created on the board 
 5. Don't forget to link the PR to the original issue if you are solving one
 6. Enable the checkbox to [allow maintainer edits]([url](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/allowing-changes-to-a-pull-request-branch-created-from-a-fork)) so the branch can be updated for a merge. Once you submit your PR, a maintainer will review your proposal. We may ask questions or request additional information.
 7. Once all changes have been made and the PR has been approved, a 'maintainer' will merge the request into the repositoy
-
-## Commit message enforcement
-
-This project uses [![Semantic Release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release) to automatically generate changelogs, increment versions and publish releases.
-
-We expect conventional commits from contributors to make this process smoother. By default, [Conventional Commits](https://github.com/conventional-changelog/conventional-changelog) are enforced using the [Angular Commit Message Format](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-format).

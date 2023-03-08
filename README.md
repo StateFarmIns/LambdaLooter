@@ -42,10 +42,5 @@ LambdaLooter relies on python files with signatures to determin what may be inte
 * sig_basic_strings.py
     * contains basic strings we want to look for that may be interesting
 
-### TODO:
 
-1. Convert CLI commands to boto3 to enable moving this to a web service
 
-![StartLamdaLooter.gif](./StartLamdaLooter.gif)
-![zipdownload.gif](./zipdownload.gif)
-![LootBuild.gif](LootBuild.gif)

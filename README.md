@@ -9,7 +9,6 @@ This script will analyze all of the Lambda code that you have access to.
 
 ## configure AWS to get a list of your profiles
 ```
-proxy_on
 pc configure aws
 cat ~/.aws/config | grep "\[profile" | cut -d " " -f 2 | cut -d "]" -f 1 >> AWSProfiles.txt
 ```

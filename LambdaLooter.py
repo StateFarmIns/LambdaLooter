@@ -116,10 +116,7 @@ def awsProfileSetup(profile, region, threads, deldownloads):
 	threads: number of threads for downloads
 	profile: the AWS profile to interact with
 	"""
-	print("")		
-	cmd = f'pc login aws --profile ' + profile
-	#print(cmd)
-	os.system(cmd)
+	print("")
 	#cmd = f'export AWS_PROFILE=' + myline
 	#print(cmd)
 	os.environ["AWS_PROFILE"] = profile
@@ -337,6 +334,7 @@ def downloadLambdas(profile, region, threads):
 def zipEnvironmentVariableFiles(profile):
 
 	zipDirectory = pathlib.Path("./loot/env")
+	zipDirectory.mkdir(exist_ok=True)
 	filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "loot/" + profile + "/" + "envVariables.zip")
 	print("Writing ZIP file to scan for loot!")
 	with zipfile.ZipFile(filepath , mode="w") as archive:

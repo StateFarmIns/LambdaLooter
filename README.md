@@ -1,7 +1,7 @@
 # LamdaLablooter
 
 ## Overview
-Organizations can have thousands of lines of code that are stored in Lambda on AWS.  This application was built to help reduce the amount of time it takes to review that code.  On our last Pen Test we had so much Lambda code to review it was impossible to parse through all of it in the short amount of time assinged to our test.  This lack of time created a necessity to automate the review of that lambda code for secrets.  Lambda Looter was born out of that automation.  Lambda Looter will take a list of profiles and scan through them and download the code you have access to and then process that code for secrets outputing any potential secrets to a loot directory.  Even though there can be a lot of false positives it makes looking for loot much faster than scanning the code itself.
+Organizations can have thousands of lines of code that are stored in Lambda on AWS.  This application was built to help reduce the amount of time it takes to review that code.  On our last Pen Test we had so much Lambda code to review it was impossible to parse through all of it in the short amount of time assingned to our test.  This lack of time created a necessity to automate the review of that lambda code for secrets.  Lambda Looter was born out of that automation.  Lambda Looter will take a list of profiles and scan through them and download the code you have access to and then process that code for secrets outputting any potential secrets to a loot directory.  Even though there can be a lot of false positives it makes looking for loot much faster than scanning the code itself.
 
 lamdalooter is a Python tool for AWS Lambda code analysis.
 
@@ -36,7 +36,7 @@ options:
 Download ---> Pillage ---> Loot ---> Prosper!
 ```
 ### Signatures
-LambdaLooter relies on python files with signatures to determin what may be interesting
+LambdaLooter relies on python files with signatures to determine what may be interesting
 * sig_aws_key.py
     * contains signatures for all types of keys and tokens used on the web
 * sig_basic_strings.py

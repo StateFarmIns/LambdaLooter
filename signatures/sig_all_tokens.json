@@ -1,0 +1,296 @@
+[
+	{ 
+		"title":"TOKEN Signatures",
+		"sigs":[
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "\\bs\\.[a-zA-Z0-9]{24}\\b",
+				"caption": "VAULT Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[\\b\"]s\\.[a-zA-Z0-9]{24}[\\b\"]",
+				"caption": "VAULT Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "\\A(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s).{4,15}\\Z",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "((?:A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16})",
+				"caption": "REGEX: Potential AWS Token",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "\\bs\\.[a-zA-Z0-9]{24}\\b",
+				"caption": "REGEX: VAULT Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[\\b\"]s\\.[a-zA-Z0-9]{24}[\\b\"]",
+				"caption": "REGEX: VAULT Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "(xox[pborsa]-[0-9]{12}-[0-9]{12}-[0-9]{12}-[a-z0-9]{32})",
+				"caption": "REGEX: Slack Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "amzn\\.mws\\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+				"caption": "REGEX: Amazon MWS Auth Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "da2-[a-z0-9]{26}",
+				"caption": "REGEX: AWS AppSync GraphQL Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "EAACEdEose0cBA[0-9A-Za-z]+",
+				"caption": "REGEX: Facebook Access Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[fF][aA][cC][eE][bB][oO][oO][kK].*[\"|\"][0-9a-f]{32}[\"|\"]",
+				"caption": "REGEX: Facebook OAuth Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[aA][pP][iI]_?[kK][eE][yY].*[\"|\"][0-9a-zA-Z]{32,45}[\"|\"]",
+				"caption": "REGEX:  Generic API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[sS][eE][cC][rR][eE][tT].*[\"|\"][0-9a-zA-Z]{32,45}[\"|\"]",
+				"caption": "REGEX: Generic Secret Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "AIza[0-9A-Za-z\\-_]{35}",
+				"caption": "REGEX: Google API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "AIza[0-9A-Za-z\\-_]{35}",
+				"caption": "REGEX: Google Cloud Platform API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+				"caption": "REGEX: Google Cloud Platform OAuth Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "AIza[0-9A-Za-z\\-_]{35}",
+				"caption": "REGEX:  Google Drive API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+				"caption": "REGEX: Google Drive OAuth Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "\"type\": \"service_account\"",
+				"caption": "REGEX: Google (GCP) Service-account Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+				"caption": "REGEX: Google Gmail OAut Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "AIza[0-9A-Za-z\\-_]{35}",
+				"caption": "REGEX: Google Gmail API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "ya29\\.[0-9A-Za-z\\-_]+",
+				"caption": "REGEX: Google OAuth Access Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "AIza[0-9A-Za-z\\-_]{35}",
+				"caption": "REGEX: Google YouTube API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
+				"caption": "REGEX:  Google YouTube OAuth Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[hH][eE][rR][oO][kK][uU].*[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}",
+				"caption": "REGEX:  Heroku API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[0-9a-f]{32}-us[0-9]{1,2}",
+				"caption": "REGEX:  MailChimp API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "key-[0-9a-zA-Z]{32}",
+				"caption": "REGEX:  Mailgun API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[a-zA-Z]{3,10}://[^/\\s:@]{3,20}:[^/\\s:@]{3,20}@.{1,100}[\"\"\\s]",
+				"caption": "REGEX:  Password in URL Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "access_token\\$production\\$[0-9a-z]{16}\\$[0-9a-f]{32}",
+				"caption": "REGEX:  PayPal Braintree Access Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "sk_live_[0-9a-z]{32}",
+				"caption": "REGEX:  Picatic API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "https://hooks\\.slack\\.com/services/T[a-zA-Z0-9_]{8}/B[a-zA-Z0-9_]{8}/[a-zA-Z0-9_]{24}",
+				"caption": "REGEX:  Slack Webhook Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "sk_live_[0-9a-zA-Z]{24}",
+				"caption": "REGEX:  Stripe API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "rk_live_[0-9a-zA-Z]{24}",
+				"caption": "REGEX:  Stripe Restricted API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "sq0atp-[0-9A-Za-z\\-_]{22}",
+				"caption": "REGEX:  Square Access Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "q0csp-[0-9A-Za-z\\-_]{43}",
+				"caption": "REGEX:  Square OAuth Secret Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[0-9]+:AA[0-9A-Za-z\\-_]{33}",
+				"caption": "REGEX:  Telegram Bot API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "SK[0-9a-fA-F]{32}",
+				"caption": "REGEX:  Twilio API Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[tT][wW][iI][tT][tT][eE][rR].*[1-9][0-9]+-[0-9a-zA-Z]{40}",
+				"caption": "REGEX:  Twitter Access Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "[tT][wW][iI][tT][tT][eE][rR].*[\"|\"][0-9a-zA-Z]{35,44}[\"|\"]",
+				"caption": "REGEX:  Twitter OAuth Token Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern": "GLPAT_[0-9a-zA-Z\\-_]{20}",
+				"caption": "REGEX: Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "regex",
+				"pattern":"/^([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_\\-\\+\/=]*)/gm",
+				"caption":"REGEX: Java Web Token",
+				"description":null
+			}
+		]
+	}
+]
+
+

@@ -22,8 +22,6 @@ PROG_VER = 0.1
 PROG_DESC = "Download your Lambda code and scan for secrets."
 PROG_EPILOG = "Download ---> Pillage ---> Loot ---> Prosper!"
 
-
-
 def parse_args():
 	"""
 	Parse cmd line args
@@ -117,11 +115,8 @@ def awsProfileSetup(profile, region, threads, deldownloads):
 	profile: the AWS profile to interact with
 	"""
 	print("")
-	#cmd = f'export AWS_PROFILE=' + myline
-	#print(cmd)
 	os.environ["AWS_PROFILE"] = profile
 	cmd = f'echo $AWS_PROFILE'
-	#print(cmd)
 	os.system(cmd)
 	print("Creating directory to store functions")
 	
@@ -133,7 +128,6 @@ def awsProfileSetup(profile, region, threads, deldownloads):
 	else:
 		print(profile, "folder already exists....moving on.")
 	
-	#print("Shelling out to download lambda now for " + profile + "!")
 	downloadLambdas(profile, region, threads)
 	threadSecrets(threads, deldownloads, profile)
 
@@ -145,12 +139,6 @@ def threadSecrets(threads, deldownloads, profile):
 	"""
 	print("Scanning for Secrets")
 	rootdir = './loot'
-	#for dir in os.scandir(rootdir):
-		#if dir.is_dir():
-	
-			#cmd=f'./secretSearcher.sh ' + dir.path
-			#print("Shelling out to search for secrets in lambda for profile " + dir.name + "!")
-			#os.system(cmd)
 	files = glob.glob(rootdir + r'/' + profile + '/*.zip', recursive=True)
 	
 	with ThreadPoolExecutor(threads) as executor:
@@ -168,9 +156,9 @@ def checkSecrets(f,deldownloads, profile):
 	Variables - 
 	f: zip file to search through
 	"""
-	
-	# print(files) # as list
-	# print(f) # nice looking single line per file
+	#keep for debugging oldschool way!
+	#print(files) # as list
+	#print(f) # nice looking single line per file
 	try:
 		with ZipFile(f, "r") as inzip:
 			for name in inzip.namelist():
@@ -183,11 +171,10 @@ def checkSecrets(f,deldownloads, profile):
 								if sigfile.startswith('sig_'):
 									#pull in all sig files from the signature dir
 									#prepare the module name so we can dynamically import it
-									mod_name = "signatures.{}".format(os.path.splitext(sigfile)[0])
 									#dynamically import the sig file so we can use the Sig dict inside
-									fsig = importlib.import_module(mod_name, package='Sig')
-
-									for sigType in fsig.Sig['types']:
+									sigfilePath =  os.path.join(os.path.dirname(os.path.realpath(__file__)), "signatures/" + sigfile)
+									jsonSigs = json.load(open(sigfilePath))
+									for sigType in jsonSigs[0]["sigs"]:
 										if sigType['type'] == 'regex':
 											for outp in re.finditer(b"%b" % sigType['pattern'].encode(), a, re.MULTILINE | re.IGNORECASE):
 												start = outp.span()[0]
@@ -197,7 +184,7 @@ def checkSecrets(f,deldownloads, profile):
 												except:
 													output = "Way too ugly...moving on"
 												prettyPrintThatOutput(profile, {
-													'title': fsig.Sig['title'], 
+													'title': jsonSigs[0]["title"], 
 													'zip': f, 
 													'lamda': name,
 													'description': sigType['caption'],
@@ -207,6 +194,7 @@ def checkSecrets(f,deldownloads, profile):
 
 										elif sigType['type'] == 'match':
 											mrPat = sigType['pattern'].encode()
+											
 											if mrPat in a:
 												for m in re.finditer(mrPat, a):
 													start = m.start()
@@ -214,19 +202,18 @@ def checkSecrets(f,deldownloads, profile):
 													start_of_line = a[:start].rfind(b"\n") + 1
 													end_of_line = a[start:].find(b"\n")
 													fullLine = a[start_of_line:end_of_line+start]
-													if filterFPs(fullLine, sigType['filters']):
-														continue
+													
 													prettyPrintThatOutput(profile, {
-														'title': fsig.Sig['title'], 
+														'title': jsonSigs[0]["title"],  
 														'zip': f, 
 														'lamda': name,
 														'description': 'Found pattern match: {}'. format(sigType['pattern']),
 														'output': fullLine,
 														'line_no': line_no
 														})
+													
 										else:
 											continue
-									del fsig
 							except Exception as e:
 								print("Something happened and the world is probably going to end {}".format(e.strerror))
 							
@@ -275,19 +262,6 @@ def prettyPrintThatOutput(profile, output: dict):
 	Variables - 
 	output: Found secrets from given signature
 	"""
-	'''
-	print("----------------------------")
-	print("Found something GOOOOOD!")
-	print("Sig File: {}".format(output['title']))
-	print("ZIP file: {}".format(output['zip']))
-	print("Lambda File: {}".format(output['lamda']))
-	print("Description: {}".format(output['description']))
-	print("Line No: {}".format(output['line_no']))
-	print("Goodies: {}".format(output['output']))
-	print("----------------------------")
-	print("")
-	'''
-	
 	filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "loot/" + profile + "-{}-loot.txt".format(os.path.basename(output['zip'])))
 	
 	print("-*-*- This sig matched {0}. Check file for loot {1}-{2}-loot.txt.".format(output['title'], profile, os.path.basename(output['zip'])))
@@ -386,8 +360,4 @@ if __name__ == "__main__":
 	args = parse_args()
 	
 	main(args.region, args.threads, args.deldownloads, profileList=args.profileList, profile=args.profile)
-	
-	#threadSecrets(args.threads,arg.deldownloads)
-	
-	#if args.deldownloads == "True":
 

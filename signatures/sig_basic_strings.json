@@ -1,0 +1,168 @@
+[
+	{ 
+		"title":"Basic Strings",
+		"sigs":[
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "{encrypt}",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "\"password\":",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "\"pass\":",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "\"secret\":",
+				"caption": "Potential secret",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "\"jwt\":",
+				"caption": "Potential JWT Token",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "token:",
+				"caption": "Potential Token",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "authorization: basic ",
+				"caption": "Potential Basic Auth Creds",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "_secret",
+				"caption": "Potential secret",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "secret_",
+				"caption": "Potential secret",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "_client",
+				"caption": "Potential client id",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "client_",
+				"caption": "Potential client id",
+				"description": null
+			},
+			{	
+				"part": "content",
+				"type": "match",
+				"pattern": "password=",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "pwd",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "Authorization: Bearer",
+				"caption": "Potential WEB Token",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "eyJ",
+				"caption": "Potential Web TOKEN",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "username",
+				"caption": "Potential username",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "vault_pw",
+				"caption": "Potential vault password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "{encrypt_aes}",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "oauth_token",
+				"caption": "Potential Oauth TOKEN",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "-----BEGIN RSA PRIVATE KEY-----",
+				"caption": "RSA Private Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "-----BEGIN DSA PRIVATE KEY-----",
+				"caption": "DSA Private Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "-----BEGIN EC PRIVATE KEY-----",
+				"caption": "EC Private Key Found",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
+				"pattern": "-----BEGIN PGP PRIVATE KEY BLOCK-----",
+				"caption": "PGP Private Key Found",
+				"description": null
+			}
+		]
+	}
+]

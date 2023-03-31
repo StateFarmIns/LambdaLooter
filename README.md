@@ -15,7 +15,7 @@ cat ~/.aws/config | grep "\[profile" | cut -d " " -f 2 | cut -d "]" -f 1 >> AWSP
 save the output of the above command to a text file
 
 ```
-usage: LambdaLooter [-h] [--version] (-p PROFILE | -f PROFILELIST) [-r REGION] [-t THREADS] [-d]
+usage: LamdaLooter [-h] [--version] (-p PROFILE | -f PROFILELIST) [-r REGION] [-t THREADS] [-fv] [-d]
 
 Download your Lambda code and scan for secrets.
 
@@ -30,6 +30,7 @@ options:
                         Your aws region you want to download lambda code from. Default=us-east-1.
   -t THREADS, --threads THREADS
                         Number of threads to download functions and scan for loot. Default=10.
+  -fv, --versions       Download all versions of the Lambda code. Default=False.
   -d, --delete          Delete the Zip files after you are done looting. Default=False.
 
 Download ---> Pillage ---> Loot ---> Prosper!

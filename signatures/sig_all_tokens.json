@@ -118,35 +118,35 @@
 				"part": "content",
 				"type": "regex",
 				"pattern": "AIza[0-9A-Za-z\\-_]{35}",
-				"caption": "REGEX:  Google Drive API Key Found",
+				"caption": "REGEX:  Google Drive API Key Found-NEED ONE",
 				"description": null
 			},
 			{
 				"part": "content",
 				"type": "regex",
 				"pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
-				"caption": "REGEX: Google Drive OAuth Token Found",
+				"caption": "REGEX: Google Drive OAuth Token Found-NEED ONE",
 				"description": null
 			},
 			{
 				"part": "content",
 				"type": "regex",
 				"pattern": "\"type\": \"service_account\"",
-				"caption": "REGEX: Google (GCP) Service-account Token Found",
+				"caption": "REGEX: Google (GCP) Service-account Token Found-NEED ONE",
 				"description": null
 			},
 			{
 				"part": "content",
 				"type": "regex",
 				"pattern": "[0-9]+-[0-9A-Za-z_]{32}\\.apps\\.googleusercontent\\.com",
-				"caption": "REGEX: Google Gmail OAut Token Found",
+				"caption": "REGEX: Google Gmail OAut Token Found-NEED ONE",
 				"description": null
 			},
 			{
 				"part": "content",
 				"type": "regex",
 				"pattern": "AIza[0-9A-Za-z\\-_]{35}",
-				"caption": "REGEX: Google Gmail API Key Found",
+				"caption": "REGEX: Google Gmail API Key Found-NEED ONE",
 				"description": null
 			},
 			{
@@ -209,7 +209,7 @@
 				"part": "content",
 				"type": "regex",
 				"pattern": "sk_live_[0-9a-z]{32}",
-				"caption": "REGEX:  Picatic API Key Found",
+				"caption": "REGEX:  Picatic API Key Found - NEED ONE",
 				"description": null
 			},
 			{
@@ -265,7 +265,7 @@
 				"part": "content",
 				"type": "regex",
 				"pattern": "[tT][wW][iI][tT][tT][eE][rR].*[1-9][0-9]+-[0-9a-zA-Z]{40}",
-				"caption": "REGEX:  Twitter Access Token Found",
+				"caption": "REGEX:  Twitter Access Token Found - NOT WORKING",
 				"description": null
 			},
 			{
@@ -279,14 +279,14 @@
 				"part": "content",
 				"type": "regex",
 				"pattern": "GLPAT_[0-9a-zA-Z\\-_]{20}",
-				"caption": "REGEX: Potential password",
+				"caption": "REGEX: GitLab Token",
 				"description": null
 			},
 			{
 				"part": "content",
 				"type": "regex",
 				"pattern":"/^([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_=]+)\\.([a-zA-Z0-9_\\-\\+\/=]*)/gm",
-				"caption":"REGEX: Java Web Token",
+				"caption":"REGEX: Java Web Token-NOT WORKING",
 				"description":null
 			}
 		]

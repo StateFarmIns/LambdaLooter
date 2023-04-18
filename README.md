@@ -1,9 +1,9 @@
-# LamdaLablooter
+# LambdaLooter
 
 ## Overview
-Organizations can have thousands of lines of code that are stored in Lambda on AWS.  This application was built to help reduce the amount of time it takes to review that code.  On our last Pen Test we had so much Lambda code to review it was impossible to parse through all of it in the short amount of time assingned to our test.  This lack of time created a necessity to automate the review of that lambda code for secrets.  Lambda Looter was born out of that automation.  Lambda Looter will take a list of profiles and scan through them and download the code you have access to and then process that code for secrets outputting any potential secrets to a loot directory.  Even though there can be a lot of false positives it makes looking for loot much faster than scanning the code itself.
+Organizations can have thousands of lines of code that are stored in Lambda on AWS.  This application was built to help reduce the amount of time it takes to review that code.  On our last Pen Test we had so much Lambda code to review it was impossible to parse through all of it in the short amount of time assingned to our test.  This lack of time created a necessity to automate the review of that Lambda code for secrets.  LambdaLooter was born out of that automation.  LambdaLooter will take a list of profiles and scan through them and download the code you have access to and then process that code for secrets outputting any potential secrets to a loot directory.  Even though there can be a lot of false positives it makes looking for loot much faster than scanning the code itself.
 
-lamdalooter is a Python tool for AWS Lambda code analysis.
+LamdaLooter is a Python tool for AWS Lambda code analysis.
 
 This script will analyze all of the Lambda code that you have access to.
 

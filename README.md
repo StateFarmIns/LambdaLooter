@@ -37,7 +37,7 @@ Download ---> Pillage ---> Loot ---> Prosper!
 ```
 ### Signatures
 LambdaLooter relies on python files with signatures to determine what may be interesting
-* sig_aws_key.json
+* sig_all_tokens.json
     * contains signatures for all types of keys and tokens used on the web
 * sig_basic_strings.json
     * contains basic strings we want to look for that may be interesting

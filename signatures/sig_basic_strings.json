@@ -12,6 +12,13 @@
 			{
 				"part": "content",
 				"type": "match",
+				"pattern": "password =",
+				"caption": "Potential password",
+				"description": null
+			},
+			{
+				"part": "content",
+				"type": "match",
 				"pattern": "\"password\":",
 				"caption": "Potential password",
 				"description": null

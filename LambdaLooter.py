@@ -14,12 +14,15 @@ from concurrent.futures import ThreadPoolExecutor, wait
 import shutil
 import gc
 import pathlib
+import boto3
+from boto3 import Session
+import requests
 
 from signatures.constants.constants import FILE_TYPES
 
 PROG_NAME = "LamdaLooter"
-PROG_VER = 0.1
-PROG_DESC = "Download your Lambda code and scan for secrets."
+PROG_VER = 0.3
+PROG_DESC = "Download your Lambda code and scan for secrets.  Default is to use Credential file for authentication"
 PROG_EPILOG = "Download ---> Pillage ---> Loot ---> Prosper!"
 
 def parse_args():
@@ -30,10 +33,10 @@ def parse_args():
 	parser.add_argument("--version", action="version", version="%(prog)s v"+str(PROG_VER))
 	
 	# either -p or -f but not both cause that is wack bro
-	profilegroup = parser.add_mutually_exclusive_group(required=True)
-	profilegroup.add_argument("-p", "--profile", dest="profile", help="Single AWS profile you want scan for lambda code")
-	profilegroup.add_argument("-f", "--file", dest="profileList", help="File containing the AWS profiles you want scan for lambda code")
-	
+	#profilegroup = parser.add_mutually_exclusive_group(required=True)
+	#profilegroup.add_argument("-p", "--profile", dest="profile", help="Single AWS profile you want scan for lambda code")
+	#profilegroup.add_argument("-f", "--file", dest="profileList", help="File containing the AWS profiles you want scan for lambda code")
+	parser.add_argument("-p", "--profile", dest="profile", help="Single AWS profile you want scan for lambda code. Defaults to credentials file.")
 	parser.add_argument("-r", "--region", dest="region", default="us-east-1", help="Your aws region you want to download lambda code from. Default=us-east-1.")
 	parser.add_argument("-t", "--threads", dest="threads", default=10, type=int, help="Number of threads to download functions and scan for loot. Default=10.")
 	parser.add_argument("-fv", "--versions", dest="versions", action='store_true', help="Download all versions of the Lambda code. Default=False.")
@@ -41,36 +44,21 @@ def parse_args():
     
 	args = parser.parse_args()
     
-	'''
-	if ((args.profile is None) and (args.profileList is None)):
-		parser.error("You must specify either -p or -f")
-		raise SystemExit(-1)
-	
-	if ((args.profile is not None and args.profileList is not None)):
-		parser.error("You can only select -p or -f, not both")
-		raise SystemExit(-1)
-
-	if ((args.profile is None) or (args.profileList is None)):
-		strFileCheck = os.path.isfile(args.profileList)
-		if not strFileCheck:
-			print("Your profile list file does not exist!")
-			raise SystemExit(-1)
-	'''
 	return args
 
 
-
-
-def main(region, threads, deldownloads, getversions, profileList=None, profile=None):       
+def main(region, threads, deldownloads, getversions, profile=None):       
 	"""
 	Main function
 	Sets the stage for everything!
 	Variables - 
 	region: aws region
 	threads: number of threads for downloads
-	profileList: Defaults to None, file with list of AWS profiles
-	profile: Defaults to None, single AWS profile
+	deldownloads: YES or NO
+	getversions: YES or NO
+	profile: the AWS profile lambdas are downloaded from 
 	"""
+	
 
 	strLoot = os.path.isdir('./loot')
 	if not strLoot:
@@ -80,45 +68,40 @@ def main(region, threads, deldownloads, getversions, profileList=None, profile=N
 	else:
 		print('loot', "folder already exists.")
 	
-	if profileList is not None:
-		# if user supplies file, we need to do some checking before going to awsProfileSetup
-		startProfileList(profileList, region, threads, deldownloads, getversions)
-	
+	if profile is None:
+		# if user doesn't supply a profile, we need grab the credential file and loop through the profiles.
+			
+			#setting this up for future Profile multi-threading
+			with ThreadPoolExecutor(threads) as executor:
+				
+				futures = [executor.submit(awsProfileSetup, profileCurrent, region, threads, deldownloads, getversions) for profileCurrent in boto3.session.Session().available_profiles]
+				#wait for all tasks to complete
+				wait(futures)
+			
 	if profile is not None:
 		# user supplied single aws profile, lets roll
-		awsProfileSetup(profile, region, threads, deldownloads, getversions)
 
-def startProfileList(profileList, region, threads, deldownloads, getversions):
-	"""
-	Start working through the file of AWS profiles
-	Variables - 
-	region: aws region
-	threads: number of threads for downloads
-	profileList: file with list of AWS profiles
-	"""
-	strFileCheck = os.path.isfile(profileList)
-	if not strFileCheck:
-		print("Your profile list file does not exist!")
-		raise SystemExit(-1)
-	with open(profileList, "r") as pf:
-		for myline in pf: 
-			myline = myline.rstrip('\n')
-			if myline != "": 
-				awsProfileSetup(myline, region, threads, deldownloads, getversions)
+			awsProfileSetup(profile, region, threads, deldownloads, getversions)
 
 def awsProfileSetup(profile, region, threads, deldownloads, getversions):
 	"""
-	AWS functions to interact with single AWS profiles.
+	AWS functions to interact with AWS profiles.
 	Either from a file list or single specified profile
 	Variables - 
+	profile: the AWS profile to interact with
 	region: aws region
 	threads: number of threads for downloads
-	profile: the AWS profile to interact with
+	deldownloads: YES or NO
+	getversions: YES or NO
 	"""
-	print("")
+	
+	
+	print (profile)
+	boto3.setup_default_session(profile_name=profile)
+	sts_client = boto3.client('sts')
+
 	os.environ["AWS_PROFILE"] = profile
-	#cmd = f'echo $AWS_PROFILE'
-	#os.system(cmd)
+
 	print("Creating directory to store functions")
 	
 	strExists = os.path.isdir('./loot/' + profile)
@@ -136,7 +119,9 @@ def threadSecrets(threads, deldownloads, profile):
 	"""
 	Thread the checkSecrets function
 	Variables - 
-	threads: number of threads for searcher
+	threads: number of threads for downloads
+	deldownloads: YES or NO
+	profile: the AWS profile to interact with
 	"""
 	print("Scanning for Secrets")
 	rootdir = './loot'
@@ -222,6 +207,7 @@ def checkSecrets(f,deldownloads, profile):
 						gc.collect()	
 
 					
+
 	except Exception as e:
 		print("That zip file was wack! {}".format(e.strerror))
 
@@ -260,7 +246,8 @@ def deleteDownload(profile):
 def prettyPrintThatOutput(profile, output: dict):
 	"""
 	Pretty print found secretes to console and file
-	Variables - 
+	Variables -
+	profile: the AWS profile lambdas are downloaded from 
 	output: Found secrets from given signature
 	"""
 	filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "loot/" + profile + "-{}-loot.txt".format(os.path.basename(output['zip'])))
@@ -285,27 +272,28 @@ def prettyPrintThatOutput(profile, output: dict):
 
 def downloadLambdas(profile, region, threads, getversions, deldownloads):
 	"""
-	Thread download lambda 'downloadFunctions' function
+	Thread download lambda 'checkVersions' function
 	Variables - 
+	profile: the AWS profile lambdas are downloaded from
 	region: aws region
 	threads: number of threads for downloads
-	profile: the AWS profile lambdas are downloaded from
+	getversions: YES or NO
+	deldownloads: Should we delete data after we are done?
 	"""
-	cmd="aws lambda list-functions --region " + region + " | jq \'.Functions[].FunctionName\' | tr -d '\"'"
-	process = subprocess.Popen(cmd,shell=True,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-	# The output from your shell command
+
+	lambda_client = boto3.client('lambda',region_name=region)
+
+	func_paginator = lambda_client.get_paginator('list_functions')
+	for func_page in func_paginator.paginate():
 	
-	result=process.stdout.readlines()
-	
-	if len(result) >= 1:
 		with ThreadPoolExecutor(threads) as executor:
-			
-			futures = [executor.submit(downloadFunctions, profile, line, region, getversions) for line in result]
+				
+			futures = [executor.submit(checkVersions, profile, func['FunctionArn'], region, getversions) for func in func_page['Functions']]
 			#wait for all tasks to complete
 			wait(futures)
+
 	
 	zipEnvironmentVariableFiles(profile, deldownloads)
-
 
 def zipEnvironmentVariableFiles(profile, deldownloads):
 
@@ -318,88 +306,74 @@ def zipEnvironmentVariableFiles(profile, deldownloads):
 			archive.write(file_path, arcname=file_path.name)
 			if deldownloads:
 				os.remove(file_path)
-
-def downloadEnvCommand(cmd, **kwargs):
-
-	process = subprocess.Popen(cmd,shell=True,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-	result=process.stdout.readlines()
 	
-	if len(result) >= 1:
-		if not kwargs["strLootFile"]:
-			with open(kwargs["filepath"], 'w') as lf:
-				pass
-			with open(kwargs["filepath"], 'a') as outputfile:
-				outputfile.write("----------------------------\n")
-				outputfile.write("ENVVAR: {}\n".format(result))
-				outputfile.write("----------------------------\n")
-				outputfile.write("\n")
+def downloadExecution(profile, strFunction, region):
+	"""
+	execute the download of the lambdas function(s) and Envionrment Varilables
+	Variables - 
+	profile: the AWS Profile we are looting
+	region: aws region
+	strFunction: arn of the lambda to download
+	profile: the AWS profile lambdas are downloaded from
+	"""
 
-def downloadLambdaCommand(cmd, **kwargs):
+	lambda_client = boto3.client('lambda',region_name=region)
+
+	func_details = lambda_client.get_function(FunctionName=strFunction)
+	downloadDir = "./loot/" + profile + "/" + func_details['Configuration']['FunctionName']  + "-version-" + func_details['Configuration']['Version'] + ".zip" 
+	print("Downloading code for: " + profile + ":" + func_details['Configuration']['FunctionName'] + " Version: " + func_details['Configuration']['Version'])
+
+	url = func_details['Code']['Location']
 	
-	call(cmd,shell=True,stdin=None)
-	
+	r = requests.get(url)
+	with open(downloadDir, "wb") as code:
+		code.write(r.content)
+
+	print("Checking Environment Variables for " +profile +":" + func_details['Configuration']['FunctionName']  + " Version: " + func_details['Configuration']['Version'])
+
 	strLoot = os.path.isdir('./loot/env')
 	if not strLoot:
 		os.mkdir('./loot/env')
-		#print("Created the folder:", './loot/env')
 
-	filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "loot/env/" + kwargs["profile"] + "-" + kwargs["strFunction"] + "-environmentVariables-loot.txt")
-	strLootFile = os.path.isfile(filepath)
-	return filepath, strLootFile			
-		
-		
-def downloadFunctions(profile, line, region, getversions):
+	saveEnvFilePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "loot/env/" + profile + "-" + func_details['Configuration']['FunctionName'] + "-"  + func_details['Configuration']['Version'] + "-environmentVariables-loot.txt")
+
+	env_details = lambda_client.get_function_configuration(FunctionName=strFunction)	
+	details = env_details['Environment']['Variables']
+
+	with open(saveEnvFilePath, 'a') as outputfile:
+		outputfile.write("----------------------------\n")
+		outputfile.write("ENVVAR: {}\n".format(details))
+		outputfile.write("----------------------------\n")
+		outputfile.write("\n")
+
+def checkVersions(profile, strFunction, region, getversions):
 	"""
-	downloadFunctions download lambdas function
+	check if we are downloading all versions of the lambdas function calls downloadExecution
+	If we are downloading multiple versions paginate
 	Variables - 
+	profile: the AWS Profile we are looting
+	strFunction: arn of the lambda to download
 	region: aws region
-	line: lambda download name
-	profile: the AWS profile lambdas are downloaded from
+	getversions: YES or NO
+
 	"""
-	strFunction = line.decode("utf-8")
-	strFunction = strFunction.strip()
-	print("Downloading code for: " + strFunction)
+
+	lambda_client = boto3.client('lambda',region_name=region)
+
 	if getversions:
 		
-		cmd = "aws lambda list-versions-by-function --function " + strFunction + " --region " + region + " --profile " + profile +" | jq \'.Versions[].Version\' | tr -d '\"'"
-		process = subprocess.Popen(cmd,shell=True,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-		result=process.stdout.readlines()
-		if len(result) >= 1:
-			for line in result:
-				line = line.decode("utf-8")
-				line = line.rstrip('\n')
-				if ("$LATEST") in line:
-					line = "LATEST"
-					print("Downloading code for: " + strFunction + " Version: " + line)
-					v_cmd = "aws lambda get-function --region " + region + " --profile " + profile + " --function-name " + strFunction + " --query 'Code.Location' | xargs wget -O ./loot/" + profile + "/" + strFunction + "-version-" + line + ".zip 2> /dev/null"
-					fname = strFunction + "-version-" + line 
-					print("Checking Environment Variables for " + strFunction + " Version: " + line)	
-					e_cmd = "aws lambda get-function --region " + region + " --function-name " + strFunction + " --profile " + profile + " --query 'Configuration.Environment.Variables'"
-
-				else:
-					print("Downloading code for: " + strFunction + " Version: " + line)
-					v_cmd = "aws lambda get-function --region " + region + " --profile " + profile + " --function-name " + strFunction + " --qualifier " + line + " --query 'Code.Location' | xargs wget -O ./loot/" + profile + "/" + strFunction + "-version-" + line + ".zip 2> /dev/null"
-					fname = strFunction + "-version-" + line 
-					print("Checking Environment Variables for " + strFunction + " Version: " + line)
-					e_cmd = "aws lambda get-function --region " + region + " --function-name " + strFunction + " --profile " + profile + " --qualifier " + line + " --query 'Configuration.Environment.Variables'"
-				
-				f,s = downloadLambdaCommand(v_cmd, profile=profile, strFunction=fname)
-				downloadEnvCommand(e_cmd, filepath=f, strLootFile=s)
+		func_paginator = lambda_client.get_paginator('list_versions_by_function')
+		
+		for func_page in func_paginator.paginate(FunctionName=strFunction):
+			for func in func_page['Versions']:
+				strFunction = func['FunctionArn']
+				downloadExecution(profile, strFunction, region)
 	else:
-			
-			print("Downloading code for: " + strFunction)
-			cmd = "aws lambda get-function --region " + region + " --function-name " + strFunction + " --query  'Code.Location' | xargs wget -O ./loot/" + profile + "/" + strFunction + ".zip 2> /dev/null"
-			f,s = downloadLambdaCommand(cmd, profile=profile, strFunction=strFunction)
-			
-			print("Checking Environment Variables for " + strFunction)
-			cmd = "aws lambda get-function --region " + region + " --function-name " + strFunction + " --query 'Configuration.Environment.Variables'"
-			downloadEnvCommand(cmd, filepath=f, strLootFile=s)
-
-			
+		downloadExecution(profile, strFunction, region)
 
 
 if __name__ == "__main__":
 	args = parse_args()
 	
-	main(args.region, args.threads, args.deldownloads, args.versions, profileList=args.profileList, profile=args.profile)
+	main(args.region, args.threads, args.deldownloads, args.versions, profile=args.profile)
 

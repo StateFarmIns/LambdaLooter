@@ -21,7 +21,7 @@ import requests
 from signatures.constants.constants import FILE_TYPES, G_FILTERS
 
 PROG_NAME = "LamdaLooter"
-PROG_VER = 0.3
+PROG_VER = 0.4
 PROG_DESC = "Download your Lambda code and scan for secrets.  Default is to use Credential file for authentication"
 PROG_EPILOG = "Download ---> Pillage ---> Loot ---> Prosper!"
 

@@ -18,10 +18,10 @@ import boto3
 from boto3 import Session
 import requests
 
-from signatures.constants.constants import FILE_TYPES
+from signatures.constants.constants import FILE_TYPES, G_FILTERS
 
 PROG_NAME = "LamdaLooter"
-PROG_VER = 0.3
+PROG_VER = 0.4
 PROG_DESC = "Download your Lambda code and scan for secrets.  Default is to use Credential file for authentication"
 PROG_EPILOG = "Download ---> Pillage ---> Loot ---> Prosper!"
 
@@ -180,6 +180,7 @@ def checkSecrets(f,deldownloads, profile):
 
 										elif sigType['type'] == 'match':
 											mrPat = sigType['pattern'].encode()
+											print(mrPat)
 											
 											if mrPat in a:
 												for m in re.finditer(mrPat, a):
@@ -188,6 +189,9 @@ def checkSecrets(f,deldownloads, profile):
 													start_of_line = a[:start].rfind(b"\n") + 1
 													end_of_line = a[start:].find(b"\n")
 													fullLine = a[start_of_line:end_of_line+start]
+													
+													if filterFPs(fullLine, sigType["filters"]):
+														continue
 													
 													prettyPrintThatOutput(profile, {
 														'title': jsonSigs[0]["title"],  
@@ -216,7 +220,7 @@ def checkSecrets(f,deldownloads, profile):
 
 def filterFPs(output, filters: list) -> bool:
 	"""
-	Filter out known false postives, based on signatures
+	Filter out known false postives, based on signatures and global filters
 	Variables - 
 	output: the output detected by a signature
 	filters: the list of filters supplied by a given signature
@@ -224,10 +228,23 @@ def filterFPs(output, filters: list) -> bool:
 	True if filter matches in output
 	False if no match occurs
 	"""
-	for filter in filters:
-		if filter.encode() in output:
-			return True
-	return False
+	try:
+
+		# Check global filters
+		for g_filter in G_FILTERS:
+			if g_filter.encode() in output:
+				return True
+	
+		#Check match specific filters
+		for filter in filters:
+			if filter.encode() in output:
+				return True
+		
+		return False
+	
+	except Exception as e:
+		print("Error with sig fp filter, you did bad things: {}".format(e))
+		return False
 
 def deleteDownload(profile):
 	"""

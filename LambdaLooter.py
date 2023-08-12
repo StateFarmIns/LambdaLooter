@@ -180,7 +180,6 @@ def checkSecrets(f,deldownloads, profile):
 
 										elif sigType['type'] == 'match':
 											mrPat = sigType['pattern'].encode()
-											#print(mrPat)
 											
 											if mrPat in a:
 												for m in re.finditer(mrPat, a):
